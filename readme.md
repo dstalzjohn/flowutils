@@ -1,4 +1,3 @@
-```
 # flowutils
 
 **flowutils** is a command-line utility for managing your project structure and improving navigation within your folder hierarchy. It allows you to create and organize projects easily, create symbolic links, and jump to specific project folders efficiently.
@@ -92,4 +91,4 @@ By leveraging `flowutils` and maintaining a clean project structure, you can sig
 We hope that `flowutils` enhances your project management and navigation. If you have any questions or encounter any issues, please don't hesitate to reach out.
 
 Happy flowing!
-```
+
