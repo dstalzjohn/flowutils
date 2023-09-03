@@ -11,17 +11,20 @@ app = typer.Typer()
 
 
 def get_config_path():
+    """Get the path to the config file. If the FLOW_CONFIG environment variable is set, use that."""
     flow_config = os.environ.get("FLOW_CONFIG", "~/.flowutils/config.yaml")
     return os.path.expanduser(flow_config)
 
 
 def load_config():
+    """Load the config file."""
     config_path = get_config_path()
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def save_config(config):
+    """Save the config file."""
     config_path = get_config_path()
     with open(config_path, "w") as f:
         yaml.dump(config, f)
@@ -45,6 +48,7 @@ def init(
         help="Capture existing projects and add them to project names",
     ),
 ):
+    """Initialize the config file."""
     config_path = get_config_path()
     config = {
         "link_location": link_location,
@@ -69,6 +73,7 @@ def init(
 
 @app.command()
 def create_project_dirs():
+    """Create the project directories."""
     config = load_config()
 
     project_location = config["project_location"]
@@ -85,6 +90,7 @@ def create_project_dirs():
 
 @app.command()
 def add_project(project: str):
+    """Add a project to the config file."""
     config = load_config()
 
     project_names = config["project_names"]
@@ -97,6 +103,7 @@ def add_project(project: str):
 
 @app.command()
 def create_links():
+    """Create the links."""
     config = load_config()
 
     link_location = config["link_location"]
@@ -114,6 +121,7 @@ def create_links():
 
 @app.command()
 def add_link(target_directory: str, name: str):
+    """Add a link to the config file."""
     config = load_config()
 
     links = config["links"]
@@ -126,6 +134,7 @@ def add_link(target_directory: str, name: str):
 
 @app.command()
 def collect_git_repos():
+    """Collect the Git repositories."""
     config = load_config()
 
     project_location = config["project_location"]
@@ -146,6 +155,7 @@ def collect_git_repos():
 
 
 def get_remote_url(repo_path):
+    """Get the remote URL of a Git repository."""
     try:
         repo = git.Repo(repo_path, search_parent_directories=True)
         return repo.remotes.origin.url
@@ -155,6 +165,7 @@ def get_remote_url(repo_path):
 
 @app.command()
 def create_git_repos():
+    """Create the Git repositories."""
     config = load_config()
     git_repos = config["git_repos"]
 
