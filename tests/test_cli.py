@@ -3,7 +3,7 @@ from os.path import abspath
 
 import yaml
 from typer.testing import CliRunner
-from flowutils.cli import app
+from flowutils.cli import app, load_config, save_config, FlowConfig
 
 runner = CliRunner()
 
@@ -20,27 +20,23 @@ def test_init(config_path: str):
         assert result.exit_code == 0
         assert result.output.strip().endswith(f"Config file created at: {config_path}")
 
-        with open(os.path.expanduser(config_path)) as f:
-            config = yaml.safe_load(f)
-            assert config["link_location"] == "./CustomLinks"
-            assert config["project_location"] == "./CustomProjects"
-            assert isinstance(config["project_names"], list)
-            assert len(config["project_names"]) == 1
+        config = load_config()
+        assert config.link_location == "./CustomLinks"
+        assert config.project_location == "./CustomProjects"
+        assert isinstance(config.project_names, list)
+        assert len(config.project_names) == 1
 
 
 def test_create_project_dirs(config_path: str):
     with runner.isolated_filesystem():
         config_path = os.path.expanduser(config_path)
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
-        with open(config_path, "w") as f:
-            config = {
-                "link_location": "./Links",
-                "project_location": "./Projects",
-                "project_names": ["project1", "project2", "project3"],
-                "project_subdirs": ["subdir1", "subdir2"],
-                "links": []
-            }
-            yaml.dump(config, f)
+
+        config = FlowConfig(link_location="./Links", project_location="./Projects",
+                            project_names=["project1", "project2", "project3"],
+                            project_subdirs=["subdir1", "subdir2"], links=[])
+
+        save_config(config)
 
         result = runner.invoke(app, ["create-project-dirs"])
 
@@ -59,23 +55,18 @@ def test_add_project(config_path: str):
     with runner.isolated_filesystem():
         config_path = os.path.expanduser(config_path)
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
-        with open(config_path, "w") as f:
-            config = {
-                "link_location": "./Links",
-                "project_location": "./Projects",
-                "project_names": ["project1", "project2"],
-                "project_subdirs": ["subdir1", "subdir2"],
-                "links": []
-            }
-            yaml.dump(config, f)
+        config = FlowConfig(link_location="./Links", project_location="./Projects",
+                            project_names=["project1", "project2"],
+                            project_subdirs=["subdir1", "subdir2"], links=[])
+
+        save_config(config)
 
         result = runner.invoke(app, ["add-project", "project3"])
 
         assert result.exit_code == 0
 
-        with open(os.path.expanduser(config_path)) as f:
-            updated_config = yaml.safe_load(f)
-            assert "project3" in updated_config["project_names"]
+        updated_config = load_config()
+        assert "project3" in updated_config.project_names
 
 
 def test_create_links(config_path: str):
