@@ -1,5 +1,5 @@
 import os
-from os.path import isdir, join
+from os.path import isdir, join, dirname
 from pathlib import Path
 
 import git
@@ -17,7 +17,7 @@ def collect():
     config = load_config()
 
     project_location = config.get_project_location()
-    git_repos = []
+    git_repos = config.git_repos
 
     for root, dirs, files in os.walk(project_location):
         if ".git" in dirs:
@@ -27,10 +27,11 @@ def collect():
                 repo_info = GitRepoConfig(
                     file_location=str(git_repo_path), url=git_repo_url
                 )
-                git_repos.append(repo_info)
-                rich.print(
-                    f"[green]Git repository found at '{git_repo_path}' with url: {git_repo_url}."
-                )
+                if repo_info not in git_repos:
+                    git_repos.append(repo_info)
+                    rich.print(
+                        f"[green]Git repository found at '{git_repo_path}' with url: {git_repo_url}."
+                    )
 
     config.git_repos = git_repos
     save_config(config)
@@ -43,7 +44,7 @@ def get_remote_url(repo_path):
     try:
         repo = git.Repo(repo_path, search_parent_directories=True)
         return repo.remotes.origin.url
-    except git.InvalidGitRepositoryError:
+    except (git.InvalidGitRepositoryError, AttributeError):
         return None
 
 
@@ -67,13 +68,13 @@ def create():
     config = load_config()
 
     for repo_info in config.git_repos:
-        if isdir(join(repo_info.file_location, ".git")):
+        if isdir(repo_info.file_location):
             rich.print(
                 f"[yellow]Git repository already exists at '{repo_info.file_location}'."
             )
             continue
         try:
-            git.Repo.clone_from(repo_info.url, repo_info.file_location)
+            git.Repo.clone_from(repo_info.url, dirname(repo_info.file_location))
             rich.print(
                 f"[green]Git repository cloned from '{repo_info.url}' to '{repo_info.file_location}'."
             )

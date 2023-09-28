@@ -18,6 +18,9 @@ class GitRepoConfig(BaseModel):
     url: str
     file_location: str
 
+    def __eq__(self, other):
+        return self.url == other.url and self.file_location == other.file_location
+
 
 class FlowConfig(BaseModel):
     """Flow config model."""

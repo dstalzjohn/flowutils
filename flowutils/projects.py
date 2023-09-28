@@ -47,8 +47,9 @@ def create():
     for name in config.project_names:
         for subdir in config.project_subdirs:
             dir_path = os.path.join(project_location, name, subdir)
-            os.makedirs(dir_path, exist_ok=True)
-            rich.print(f"[yellow]Created directory '{dir_path}'.")
+            if not isdir(dir_path):
+                os.makedirs(dir_path, exist_ok=True)
+                rich.print(f"[yellow]Created directory '{dir_path}'.")
 
     rich.print("[blue]Project directories created.")
 
