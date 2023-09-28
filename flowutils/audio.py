@@ -9,9 +9,9 @@ app = typer.Typer()
 
 
 @app.command()
-def to_m4a(mp3_file_path: str =
-           typer.Option(help="Location path of the mp3 input file"),
-           m4a_file_path: Optional[str] = typer.Option(None, help="Location path of the m4a file")):
+def toipod(mp3_file_path: str =
+           typer.Argument(help="Location path of the mp3 input file"),
+           m4a_file_path: Optional[str] = typer.Argument(None, help="Location path of the m4a file")):
     """Convert mp3 file to m4a file."""
     if not is_ffmpeg_installed():
         rich.print("[red]ffmpeg is not installed.")
@@ -23,16 +23,14 @@ def to_m4a(mp3_file_path: str =
 
 
 @app.command()
-def info(file_path: str = typer.Option(help="Location path of the sound input file")):
+def info(file_path: str = typer.Argument(help="Location path of the sound input file")):
     """Get info about an mp3 file."""
     if not is_ffmpeg_installed():
         rich.print("[red]ffmpeg is not installed.")
         return
     sound = AudioSegment.from_file(file_path)
-    duration = len(sound)
     # Get the file type of the audio file
-    file_type = sound.export_format
-    rich.print(f"[blue]File duration: {duration/1000:03f} s, Format: {file_type}")
+    rich.print(f"[blue]File duration: {sound.duration_seconds:03f} s")
 
 
 def is_ffmpeg_installed():
@@ -47,4 +45,4 @@ def is_ffmpeg_installed():
 def convert_mp3_to_m4a(mp3_file_path, m4a_file_path):
     """Convert mp3 file to m4a file."""
     mp3_audio = AudioSegment.from_mp3(mp3_file_path)
-    mp3_audio.export(m4a_file_path, format='m4a')
+    mp3_audio.export(m4a_file_path, format='ipod')
