@@ -19,6 +19,8 @@ def create():
     link: LinkConfig
     for link in config.links:
         link_path = os.path.join(link_location, link.name)
+        if os.path.exists(link_path):
+            os.remove(link_path)
         os.symlink(link.target, link_path)
 
     rich.print("[blue]Links created.")
@@ -34,6 +36,7 @@ def add(target_directory: str, name: str):
     save_config(config)
 
     rich.print(f"[blue]Link '{name}' added.")
+    create()
 
 
 @app.command(name="list")
