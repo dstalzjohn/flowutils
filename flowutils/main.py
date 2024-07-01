@@ -3,7 +3,7 @@ from os.path import dirname, isdir, join
 
 import typer
 import rich
-from flowutils import projects, links, repos, audio
+from flowutils import projects, links, repos, audio, video
 
 from flowutils.utils import FlowConfig, get_config_path, save_config
 
@@ -12,6 +12,7 @@ app.add_typer(projects.app, name="projects")
 app.add_typer(links.app, name="links")
 app.add_typer(repos.app, name="repos")
 app.add_typer(audio.app, name="audio")
+app.add_typer(video.app, name="video")
 
 
 @app.command()
