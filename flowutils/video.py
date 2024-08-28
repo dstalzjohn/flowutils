@@ -6,7 +6,6 @@ import typer
 from flowutils.audio import is_ffmpeg_installed
 import subprocess
 
-# for file in /pfad/zum/AVCHD/BDMV/STREAM/*.MTS; do ffmpeg -i "$file" -c:v libx264 -crf 23 -c:a aac -b:a 128k "${file%.*}.mp4"; done
 
 app = typer.Typer()
 
@@ -15,7 +14,7 @@ app = typer.Typer()
 def extract_avchd(container_file_path: str =
            typer.Argument(help="Location path of the avchd folder"),
            output_folder: str = typer.Argument(None, help="Location of the output folder")):
-    """Convert mp3 file to m4a file."""
+    """Exctracts mp3 videos from a avchd container file"""
     if not is_ffmpeg_installed():
         rich.print("[red]ffmpeg is not installed.")
         return
@@ -57,3 +56,38 @@ def convert_avchd_to_mp4(container_file_path: str, output_folder: str, codec='li
             except subprocess.CalledProcessError as e:
                 rich.print(f"Error converting {filename}: {e}")
 
+
+@app.command()
+def extract_audio_as_mp3(video_file_path: str =
+           typer.Argument(help="Path to the video file"),
+           output_file: str = typer.Argument(help="Path to the output mp3 file")):
+    """Extracts audio from a video file and saves it as mp3"""
+    if not is_ffmpeg_installed():
+        rich.print("[red]ffmpeg is not installed.")
+        return
+    convert_video_to_mp3(video_file_path, output_file)
+    rich.print(f"[blue]MP3 audio file created at: {output_file}")
+
+
+def convert_video_to_mp3(video_file_path: str, output_file: str, audio_bitrate='192k'):
+    """Convert video file to mp3"""
+    output_dir = os.path.dirname(output_file)
+    if len(output_dir) > 0:
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    # Construct the FFmpeg command
+    command = [
+        'ffmpeg',
+        '-i', video_file_path,
+        '-q:a', '0',
+        '-map', 'a',
+        '-b:a', audio_bitrate,
+        output_file
+    ]
+
+    try:
+        rich.print(f"[green]Extracting audio from {video_file_path}[/green]")
+        subprocess.run(command, check=True)
+        rich.print(f"Successfully extracted audio to {output_file}")
+    except subprocess.CalledProcessError as e:
+        rich.print(f"Error extracting audio from {video_file_path}: {e}")
