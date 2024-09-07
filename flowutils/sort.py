@@ -20,10 +20,9 @@ def sort_folder(
     folder_path: str, rules: List[SortingRuleConfig], dry_run: bool = False
 ):
     """Sort files in a folder based on the given rules."""
-    file_list = os.listdir(folder_path)
     for rule in rules:
         rich.print(f"[pale_turquoise1]{rule.sub_folder_name}[/pale_turquoise1]")
-        for filename in file_list:
+        for filename in os.listdir(folder_path):
             file_path = os.path.join(folder_path, filename)
             if os.path.isfile(file_path):
                 if any(
@@ -41,7 +40,7 @@ def sort_folder(
                         rich.print(
                             f"[green]Moved: {file_path} -> {rule.sub_folder_name}"
                         )
-                    break
+
 
 
 @app.command()
