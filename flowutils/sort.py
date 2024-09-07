@@ -21,13 +21,18 @@ def sort_folder(
 ):
     """Sort files in a folder based on the given rules."""
     for rule in rules:
-        rich.print(f"[pale_turquoise1]{rule.sub_folder_name}[/pale_turquoise1]")
+        applied_rule = False
         for filename in os.listdir(folder_path):
             file_path = os.path.join(folder_path, filename)
             if os.path.isfile(file_path):
                 if any(
                     keyword.lower() in filename.lower() for keyword in rule.contain_list
                 ):
+                    if not applied_rule:
+                        applied_rule = True
+                        rich.print(
+                            f"[pale_turquoise1]{rule.sub_folder_name}[/pale_turquoise1]"
+                        )
                     target_folder = os.path.join(folder_path, rule.sub_folder_name)
                     target_path = os.path.join(target_folder, filename)
                     if dry_run:
