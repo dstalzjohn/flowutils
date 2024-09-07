@@ -42,7 +42,6 @@ def sort_folder(
                         )
 
 
-
 @app.command()
 def run(
     dry_run: bool = typer.Option(
