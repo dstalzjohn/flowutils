@@ -35,6 +35,11 @@ def sort_folder(
                         )
                     target_folder = os.path.join(folder_path, rule.sub_folder_name)
                     target_path = os.path.join(target_folder, filename)
+                    if os.path.exists(target_path):
+                        rich.print(
+                            f"[red]Skipped: File already exists! - {target_path}[/red]"
+                        )
+                        continue
                     if dry_run:
                         rich.print(
                             f"[blue]Would move: {file_path} -> {rule.sub_folder_name}"
