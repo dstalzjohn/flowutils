@@ -1,3 +1,4 @@
+"""module for utils and configs"""
 import os
 from os.path import expanduser
 
@@ -22,6 +23,30 @@ class GitRepoConfig(BaseModel):
         return self.url == other.url and self.file_location == other.file_location
 
 
+class SortingRuleConfig(BaseModel):
+    """Sorting rule config model."""
+
+    sub_folder_name: str
+    contain_list: list[str] = []
+
+
+class SortFolderConfig(BaseModel):
+    """Sort folder config model."""
+
+    target_folder: str
+    rules: list[SortingRuleConfig] = []
+
+    def get_target_folder(self) -> str:
+        """Get target folder with expand_user"""
+        return os.path.expanduser(self.target_folder)
+
+
+class SortConfig(BaseModel):
+    """Sort config"""
+
+    folder_configs: list[SortFolderConfig] = []
+
+
 class FlowConfig(BaseModel):
     """Flow config model."""
 
@@ -31,6 +56,7 @@ class FlowConfig(BaseModel):
     project_subdirs: list[str] = []
     links: list[LinkConfig] = []
     git_repos: list[GitRepoConfig] = []
+    sort: SortConfig = SortConfig()
 
     def get_project_location(self) -> str:
         return expanduser(self.project_location)

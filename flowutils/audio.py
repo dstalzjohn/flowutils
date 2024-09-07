@@ -9,9 +9,12 @@ app = typer.Typer()
 
 
 @app.command()
-def toipod(mp3_file_path: str =
-           typer.Argument(help="Location path of the mp3 input file"),
-           m4a_file_path: Optional[str] = typer.Argument(None, help="Location path of the m4a file")):
+def toipod(
+    mp3_file_path: str = typer.Argument(help="Location path of the mp3 input file"),
+    m4a_file_path: Optional[str] = typer.Argument(
+        None, help="Location path of the m4a file"
+    ),
+):
     """Convert mp3 file to m4a file."""
     if not is_ffmpeg_installed():
         rich.print("[red]ffmpeg is not installed.")
@@ -36,7 +39,7 @@ def info(file_path: str = typer.Argument(help="Location path of the sound input 
 def is_ffmpeg_installed():
     """Check if ffmpeg is installed."""
     try:
-        subprocess.run(['ffmpeg', '-version'], capture_output=True, check=True)
+        subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
         return True
     except subprocess.CalledProcessError:
         return False
@@ -45,4 +48,4 @@ def is_ffmpeg_installed():
 def convert_mp3_to_m4a(mp3_file_path, m4a_file_path):
     """Convert mp3 file to m4a file."""
     mp3_audio = AudioSegment.from_mp3(mp3_file_path)
-    mp3_audio.export(m4a_file_path, format='ipod')
+    mp3_audio.export(m4a_file_path, format="ipod")
