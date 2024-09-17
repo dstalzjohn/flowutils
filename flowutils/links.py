@@ -1,4 +1,5 @@
 """module for link commands"""
+
 import os
 from os.path import abspath
 

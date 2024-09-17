@@ -2,7 +2,6 @@ from os.path import isfile
 
 from pydub import AudioSegment
 from typer.testing import CliRunner
-from flowutils import audio
 from flowutils.audio import is_ffmpeg_installed, app
 
 runner = CliRunner()

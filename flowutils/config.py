@@ -1,4 +1,5 @@
 """module for config commands"""
+
 import os
 from datetime import datetime
 

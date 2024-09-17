@@ -1,4 +1,5 @@
 """module for utils and configs"""
+
 import os
 from os.path import expanduser
 

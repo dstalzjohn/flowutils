@@ -1,4 +1,5 @@
 """module for sorting commands"""
+
 import os
 import shutil
 from typing import List
@@ -56,7 +57,7 @@ def sort_folder(
 def run(
     dry_run: bool = typer.Option(
         False, "--dry", "-d", help="Perform a dry run without actually moving files"
-    )
+    ),
 ):
     """Sort files in configured folders."""
     config = load_config()

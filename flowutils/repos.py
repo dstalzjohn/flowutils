@@ -1,5 +1,5 @@
 import os
-from os.path import isdir, join, dirname
+from os.path import isdir, dirname
 from pathlib import Path
 
 import git
